@@ -16,3 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+//Route::resource('contacts', App\Http\Controllers\ContactController::class);
+//Route::resource('phones', App\Http\Controllers\PhoneController::class);
+//Route::resource('contact-phones', App\Http\Controllers\ContactPhoneController::class);

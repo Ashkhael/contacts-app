@@ -9,8 +9,6 @@ services:
     container_name: contacts_app_backend
     restart: unless-stopped
     working_dir: /var/www/html/backend
-    #volumes:
-    #  - ./backend:/var/www/html
     ports:
       - "8000:8000"
     environment:
@@ -23,8 +21,8 @@ services:
       - APP_ENV=local
       - APP_DEBUG=true
       - APP_URL=http://localhost:8000
-      - MIX_APP_URL="${APP_URL}"
-      - MIX_SOCKET_URL="${APP_URL}"
+      ##- MIX_APP_URL="${APP_URL}"
+      ##- MIX_SOCKET_URL="${APP_URL}"
     depends_on:
       - db
     networks:
@@ -39,8 +37,6 @@ services:
     container_name: contacts_app_frontend
     restart: unless-stopped
     working_dir: /var/www/html/frontend
-    #volumes:
-    #  - ./frontend:/var/www/html/app
     environment:
       - VUE_APP_API_URL=http://app:8000/api
     ports:
@@ -59,8 +55,6 @@ services:
       - POSTGRES_DB=contacts
     ports:
       - "5432:5432"
-    volumes:
-      - data:/var/lib/postgresql/data
     networks:
       - contacts_network
 volumes:

@@ -5,6 +5,7 @@ WORKDIR /var/www/html/backend
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
+    libpq-dev \
     build-essential \
     libzip-dev \
     libonig-dev \
@@ -16,7 +17,7 @@ RUN apt-get update && apt-get install -y \
     curl
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+RUN docker-php-ext-install pdo pdo_pgsql mbstring exif pcntl bcmath gd
 
 # Install Composer
 COPY --from=composer:2.2 /usr/bin/composer /usr/bin/composer
@@ -32,9 +33,6 @@ RUN composer install --no-scripts --no-autoloader --prefer-dist
 
 # Generate application key
 RUN php artisan key:generate
-
-# run migrations and seeds
-RUN php artisan migrate:fresh --seed
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/backend/storage /var/www/html/backend/bootstrap/cache

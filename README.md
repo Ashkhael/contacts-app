@@ -10,4 +10,13 @@ All three services are connected to a network named contacts_network which is de
 
 Additional comments can be found in the respective Dockerfiles
 
-on clone, in root folder run docker-compose up
+Clone, in root folder run docker-compose up
+
+BACKEND
+A barebone laravel app using infyom for templating, with single database table.
+API is for the simplicity sake not behind any auth currently, but would implement bearer auth with Sanctum
+
+For migrations and seeding run docker exec contacts_app_backend php artisan migrate --seed
+
+FRONTEND
+A simple Vuejs app

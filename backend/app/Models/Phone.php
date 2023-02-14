@@ -12,15 +12,18 @@ class Phone extends Model
     public $table = 'phones';
 
     public $fillable = [
-        'phone'
+        'phone',
+        'label'
     ];
 
     protected $casts = [
-        'phone' => 'string'
+        'phone' => 'string',
+        'label' => 'string'
     ];
 
     public static array $rules = [
-        'phone' => 'required|string|max:255'
+        'phone' => 'required|string|max:255',
+        'label' => 'required|string|max:255'
     ];
 
     public function contactPhones(): \Illuminate\Database\Eloquent\Relations\HasMany

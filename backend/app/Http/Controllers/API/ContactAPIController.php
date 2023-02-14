@@ -4,11 +4,13 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Requests\CreateContactRequest;
 use App\Http\Requests\UpdateContactRequest;
-use App\Models\Contact;
 use App\Repositories\ContactRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
+use App\Models\Contact;
+use App\Models\Phone;
+use App\Models\ContactPhone;
 
 /**
  * Class ContactAPIController
@@ -45,7 +47,22 @@ class ContactAPIController extends AppBaseController
     {
         $input = $request->all();
 
+        $phones = $input['phones'];
+
         $contact = $this->contactRepository->create($input);
+
+        if (!empty($phones)) {
+            foreach ($phones as $ph) {
+                $phone = new Phone;
+                $phone->phone = $ph['number'];
+                $phone->label = $ph['label'];
+                $phone->save();
+                $contact_phone = new ContactPhone;
+                $contact_phone->contact_id = $contact->id;
+                $contact_phone->phone_id = $phone->id;
+                $contact_phone->save();
+            }
+        }
 
         return $this->sendResponse($contact->toArray(), 'Contact saved successfully');
     }
@@ -58,12 +75,16 @@ class ContactAPIController extends AppBaseController
     {
         /** @var Contact $contact */
         $contact = $this->contactRepository->find($id);
+        $contactPhones = ContactPhone::select('phone_id')->where('contact_id',$contact->id)->get();
+        $phones = Phone::whereIn('id', $contactPhones)->get();
 
         if (empty($contact)) {
             return $this->sendError('Contact not found');
         }
 
-        return $this->sendResponse($contact->toArray(), 'Contact retrieved successfully');
+        $data = ['contact'=>$contact, 'phones'=>$phones];
+
+        return $this->sendResponse($data, 'Contact retrieved successfully');
     }
 
     /**

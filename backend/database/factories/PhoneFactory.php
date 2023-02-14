@@ -15,8 +15,10 @@ class PhoneFactory extends Factory
      */
     public function definition()
     {
+        $rand = ['Work', 'Home', 'Landline', 'Mobile'];
         return [
             'phone' => $this->faker->phoneNumber,
+            'label' => $rand[array_rand($rand)],
         ];
     }
 }

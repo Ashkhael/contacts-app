@@ -75,14 +75,20 @@ class ContactAPIController extends AppBaseController
     {
         /** @var Contact $contact */
         $contact = $this->contactRepository->find($id);
-        $contactPhones = ContactPhone::select('phone_id')->where('contact_id',$contact->id)->get();
-        $phones = Phone::whereIn('id', $contactPhones)->get();
+        $contactPhones = ContactPhone::select(
+            'contact_phone.phone_id as phone_id',
+            'phones.phone as phone_number',
+            'phones.label as label',
+        )
+        ->join('phones', 'contact_phone.phone_id', '=', 'phones.id')
+        ->where('contact_id','=', $id)
+        ->get();
 
         if (empty($contact)) {
             return $this->sendError('Contact not found');
         }
 
-        $data = ['contact'=>$contact, 'phones'=>$phones];
+        $data = ['contact'=>$contact, 'phones'=>$contactPhones];
 
         return $this->sendResponse($data, 'Contact retrieved successfully');
     }
@@ -121,8 +127,12 @@ class ContactAPIController extends AppBaseController
         if (empty($contact)) {
             return $this->sendError('Contact not found');
         }
-
-        $contact->delete();
+        $contact_phones = ContactPhone::where('contact_id', $id)->get();
+        foreach ($contact_phones as $contact_phone) {
+            $phone = Phone::where('id', $contact_phone->id)->first();
+            $phone->delete();
+            $contact_phone->delete();
+        } 
 
         return $this->sendSuccess('Contact deleted successfully');
     }

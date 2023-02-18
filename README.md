@@ -13,10 +13,9 @@ Additional comments can be found in the respective Dockerfiles
 Clone, in root folder run docker-compose up
 
 BACKEND
-A barebone laravel app using infyom for templating, with single database table.
-API is for the simplicity sake not behind any auth currently, but would implement bearer auth with Sanctum
-
+A barebone laravel app using infyom for templating, with three database tables - contacts, phones and contacts_phones junction table.
+API is for the simplicity sake not behind any auth currently, (can be quickly implemented with Sanctum)
 For migrations and seeding run docker exec contacts_app_backend php artisan migrate --seed
 
 FRONTEND
-A simple Vuejs app
+A simple Vuejs contact management app using bootstrap for design and axios for fetching data, as well as Vue Router 

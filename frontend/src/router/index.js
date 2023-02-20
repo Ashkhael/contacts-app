@@ -13,18 +13,16 @@ const router = createRouter({
       name: "All contacts",
       alias:"/contacts",
       component: ContactsListView,
-      children: [
-        {
-          path:"/contacts/:id",
-          name:"Contact Details",
-          component: ContactDetailView,
-        },
-        {
-          path: "/contacts/update/:id",
-          name: "Update",
-          component: ContactUpdateView,
-        },
-      ]
+    },
+    {
+      path:"/contacts/:id",
+      name:"Contact Details",
+      component: ContactDetailView,
+    },
+    {
+      path: "/contacts/update/:id",
+      name: "Update",
+      component: ContactUpdateView,
     },
     {
       path: "/contacts/create",

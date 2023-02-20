@@ -13,9 +13,10 @@ class ContactFactory extends Factory
      */
     public function definition()
     {
+        $firstname = $this->faker->firstName($gender = 'male'|'female');
+        $lastname = $this->faker->lastName;
         return [
-            'first_name' => $this->faker->firstName($gender = 'male'|'female'),
-            'last_name' => $this->faker->lastName,
+            'full_name' => $firstname.' '.$lastname,
             'email' => $this->faker->safeEmail,      
             'profile_photo' => $this->faker->numberBetween(1, 9999),
         ];

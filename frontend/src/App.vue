@@ -5,10 +5,8 @@
         <div class="col-md-3">
           <navbar/>
         </div>
-        <div class="col-5">
-          <div class="container">
+        <div class="col-9">
             <router-view/>
-          </div>
         </div>  
       </div>
     </div>

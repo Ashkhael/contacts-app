@@ -61,10 +61,13 @@ class ContactAPIController extends AppBaseController
                 $contact_phone->contact_id = $contact->id;
                 $contact_phone->phone_id = $phone->id;
                 $contact_phone->save();
+                $data['phones']=[$phone->id];
             }
         }
 
-        return $this->sendResponse($contact->toArray(), 'Contact saved successfully');
+        $data['contact']=$contact->toArray();
+
+        return $this->sendResponse($data, 'Contact saved successfully');
     }
 
     /**
@@ -110,7 +113,31 @@ class ContactAPIController extends AppBaseController
 
         $contact = $this->contactRepository->update($input, $id);
 
-        return $this->sendResponse($contact->toArray(), 'Contact updated successfully');
+        $phones = $input['phones'];
+        $data['contact'] = $contact->toArray();
+
+        if (!empty($phones)) {
+            foreach ($phones as $ph) {
+                if ($ph['id']) {
+                    $phone = Phone::where('id', $ph['id'])->first();
+                    $phone->phone = $ph['number'];
+                    $phone->label = $ph['label'];
+                    $phone->save();
+                } else {
+                    $phone = new Phone;
+                    $phone->phone = $ph['number'];
+                    $phone->label = $ph['label'];
+                    $phone->save();
+                    $contact_phone = new ContactPhone;
+                    $contact_phone->contact_id = $contact->id;
+                    $contact_phone->phone_id = $phone->id;
+                    $contact_phone->save();
+                    $data['phones']=[$phone->id];
+                }
+            }
+        }
+
+        return $this->sendResponse($data, 'Contact updated successfully');
     }
 
     /**
@@ -135,5 +162,21 @@ class ContactAPIController extends AppBaseController
         } 
 
         return $this->sendSuccess('Contact deleted successfully');
+    }
+    public function favorite($id): JsonResponse
+    {
+        $contact = $this->contactRepository->find($id);
+        if (empty($contact)) {
+            return $this->sendError('Contact not found');
+        }
+        if($contact->favorite){
+            $contact->favorite = false;
+            $contact->save();
+        } else {
+            $contact->favorite = true;
+            $contact->save();
+        }
+
+        return $this->sendSuccess('Contact updated successfully');
     }
 }

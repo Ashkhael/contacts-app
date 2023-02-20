@@ -22,4 +22,5 @@ Route::middleware('guest')->group(function () {
     Route::resources([
         '/contacts'=>App\Http\Controllers\API\ContactAPIController::class
     ]);
+    Route::put('/favorite/{id}', [App\Http\Controllers\API\ContactAPIController::class, 'favorite'])->name('favorite');
 });
